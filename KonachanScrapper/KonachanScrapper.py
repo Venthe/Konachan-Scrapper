@@ -2,11 +2,12 @@ import urllib.request
 import urllib.parse
 import os
 import html
+
 from bs4 import BeautifulSoup
 
 targetLink = "http://konachan.com/post?page="
 startingPage = 1
-endingPage = 10
+endingPage = 60
 
 def cleanUrl(url):
     return urllib.parse.unquote(html.unescape(url)).strip()
@@ -16,7 +17,7 @@ def cleanFullFileName(imageHref):
     imageFullFileName = cleanUrl(imageFullFileName)
     imageFullFileName = os.path.splitext(imageFullFileName)
     return imageFullFileName
-	
+
 def removeReservedCharacters(value, deletechars):
     for c in deletechars:
         value = value.replace(c,'')
@@ -46,12 +47,13 @@ def getDirectLinksToImages(targetUrl):
 class ImageUrlWrapper:
     def __init__(self, image):
         imageHref = image.get("href")
+        imageHrefPrefix = "http:"
         imageFullFileName = cleanFullFileName(imageHref)
         imageFileName = cleanImageFileName(imageFullFileName[0])
         imageFileExt = imageFullFileName[1]
         fileNameConcatenate = imageFileName+imageFileExt
 
-        self.url = imageHref
+        self.url = imageHrefPrefix + imageHref
         self.fileName = fileNameConcatenate
 
 def listImagesInUrl(targetUrl):
